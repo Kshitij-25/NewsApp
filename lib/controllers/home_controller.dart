@@ -28,7 +28,7 @@ class HomeController extends GetxController {
     selectedCountryCode.value = hiveBox.value!.get('selectedCountry');
     topHeadlines();
     selectedCategory.value = "entertainment";
-    // topCategoriesHeadlines();
+    getEverything();
   }
 
   @override
@@ -43,27 +43,13 @@ class HomeController extends GetxController {
     topHeadlinesList.addAll(topHeadlines!);
   }
 
-  void topCategoriesHeadlines() async {
-    List<Article>? topCategoriesHeadlines = await _newsRepo.topHeadlines(10, 1);
-    topCategoriesHeadlinesList.addAll(topCategoriesHeadlines!);
-  }
+  // void topCategoriesHeadlines() async {
+  //   List<Article>? topCategoriesHeadlines = await _newsRepo.topHeadlines(10, 1);
+  //   topCategoriesHeadlinesList.addAll(topCategoriesHeadlines!);
+  // }
 
   void getEverything() async {
-    try {
-      Response response = await dioRequest.getReq(
-        url: AppUrl().everything,
-      );
-      var responseJson = response.data;
-      if (response.statusCode == 200) {
-        everythingList.clear();
-
-        List<dynamic> jsonList = responseJson['articles'];
-        List<Article> parsedArticles =
-            jsonList.map((json) => Article.fromJson(json)).toList();
-        everythingList.addAll(parsedArticles);
-      }
-    } catch (e) {
-      debugPrint("ERROR $e");
-    }
+    List<Article>? everything = await _newsRepo.everything(10, 1);
+    everythingList.addAll(everything!);
   }
 }

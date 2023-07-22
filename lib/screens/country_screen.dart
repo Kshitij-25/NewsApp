@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
+import 'package:newsapp/controllers/home_controller.dart';
 
 import 'package:newsapp/routes/app_routes.dart';
 
@@ -49,6 +50,9 @@ class _CountryScreenState extends State<CountryScreen> {
             // Assign the selected country code to a variable
             selectedCountryCode.value = countryCode;
             hiveBox.value!.put('selectedCountry', selectedCountryCode.value);
+            HomeController().topHeadlines();
+            selectedCategory.value = "entertainment";
+            HomeController().getEverything();
             Get.offAndToNamed(
                 AppRoutes.HOMESCREEN); // Close the CountrySelectionScreen
           },

@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:newsapp/routes/app_routes.dart';
 import 'package:newsapp/screens/webview_screen.dart';
 
 import '../models/articles.dart';
@@ -41,7 +40,12 @@ Widget _buildBottomSheetContent(context, Article article) {
                     ),
                     fit: BoxFit.cover,
                   )
-                : const Placeholder(),
+                : const Center(
+                    child: Icon(
+                      CupertinoIcons.news_solid,
+                      size: 75,
+                    ),
+                  ),
           ),
           const SizedBox(
             height: 15,
