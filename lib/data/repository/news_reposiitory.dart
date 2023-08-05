@@ -18,7 +18,7 @@ class NewsRepository {
       );
       var responseJson = response.data;
       if (response.statusCode == 200) {
-        topHeadlinesList.clear();
+        // topHeadlinesList.clear();
 
         List<dynamic> jsonList = responseJson['articles'];
         List<Article> parsedArticles =
@@ -40,8 +40,6 @@ class NewsRepository {
       );
       var responseJson = response.data;
       if (response.statusCode == 200) {
-        topHeadlinesList.clear();
-
         List<dynamic> jsonList = responseJson['articles'];
         List<Article> parsedArticles =
             jsonList.map((json) => Article.fromJson(json)).toList();

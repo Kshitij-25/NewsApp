@@ -4,9 +4,7 @@ import 'package:get/get.dart';
 import 'package:newsapp/constants/globals.dart';
 import 'package:newsapp/routes/app_pages.dart';
 import 'package:newsapp/routes/app_routes.dart';
-import 'package:newsapp/screens/country_screen.dart';
 
-import 'screens/homescreen.dart';
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
