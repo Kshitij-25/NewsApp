@@ -1,4 +1,4 @@
-Map<String, Map<String, dynamic>> countriesMap = {
+Map<String, Map<String, dynamic>> fetchCountriesMap = {
   'ae': {
     'name': 'United Arab Emirates',
     'id': 784,

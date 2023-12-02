@@ -1,50 +1,18 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:logger/logger.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:news_app2/app.dart';
 
-// Import for Android features.
-import 'package:webview_flutter_android/webview_flutter_android.dart';
-// Import for iOS features.
-import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
-
-import 'app.dart';
-import 'constants/globals.dart';
-
-var logger = Logger(level: Level.info);
-
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   HttpOverrides.global = MyHttpOverrides();
 
-  webViewCont = WebViewController()
-    ..setJavaScriptMode(JavaScriptMode.unrestricted)
-    ..setBackgroundColor(Colors.white);
-  if (WebViewPlatform.instance is WebKitWebViewPlatform) {
-    webViewParams = WebKitWebViewControllerCreationParams(
-      allowsInlineMediaPlayback: true,
-      mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
-    );
-  } else {
-    webViewParams = const PlatformWebViewControllerCreationParams();
-  }
-  final WebViewController controller =
-      WebViewController.fromPlatformCreationParams(webViewParams!);
-// ···
-  if (controller.platform is AndroidWebViewController) {
-    AndroidWebViewController.enableDebugging(true);
-    (controller.platform as AndroidWebViewController)
-        .setMediaPlaybackRequiresUserGesture(false);
-  }
+  await dotenv.load(fileName: "flutter.env");
 
-  Directory appDocDir = await getApplicationDocumentsDirectory();
-  Hive.init(appDocDir.path);
-  hiveBox.value = await Hive.openBox('news_app');
-
-  runApp(const MainApp());
+  runApp(const ProviderScope(child: MainApp()));
 }
 
 class MyHttpOverrides extends HttpOverrides {
