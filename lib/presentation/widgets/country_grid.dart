@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:news_app2/presentation/providers/top_headlines_provider.dart';
 
 import '../providers/country_provider.dart';
 
@@ -22,8 +23,12 @@ class CountryGrid extends StatelessWidget {
             final countryData = countriesMap[countryCode];
 
             return GestureDetector(
-              onTap: () {
-                // Handle country selection
+              onTap: () async {
+                ref
+                    .read(selectedCountryCodeProvider.notifier)
+                    .setSelectedCountryCode(countryCode);
+                ref.read(topHeadlinesProvider);
+                Navigator.of(context).pushReplacementNamed('/homescreen');
               },
               child: Card(
                 child: Column(
