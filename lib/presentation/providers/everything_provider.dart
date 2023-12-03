@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/repositories/everything_repo.dart';
 import '../../data/sources/everything_api_service.dart';
+import 'category_provider.dart';
 
 final everythingRepositoryProvider = Provider<EverythingRepository>((ref) {
   final everythingApiService = ref.read(everythingApiServiceProvider);
@@ -19,8 +20,9 @@ final fetchEverythingUseCaseProvider = Provider<FetchEverythingUseCase>((ref) {
 
 final everythingProvider = FutureProvider<List<Articles>?>((ref) async {
   final useCase = ref.read(fetchEverythingUseCaseProvider);
+  final selectedCategory = ref.watch(selectedCategoryProvider);
   try {
-    return await useCase.getEverything("entertainment", 10, 1);
+    return await useCase.getEverything(selectedCategory, 10, 1);
   } on Failure catch (failure) {
     print(failure.message);
     return null;

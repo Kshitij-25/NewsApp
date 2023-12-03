@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:news_app2/presentation/providers/top_headlines_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../providers/country_provider.dart';
 
@@ -27,6 +28,11 @@ class CountryGrid extends StatelessWidget {
                 ref
                     .read(selectedCountryCodeProvider.notifier)
                     .setSelectedCountryCode(countryCode);
+
+                // Save selected country code to shared preferences
+                final sharedPreferences = await SharedPreferences.getInstance();
+                sharedPreferences.setString('selectedCountryCode', countryCode);
+
                 ref.read(topHeadlinesProvider);
                 Navigator.of(context).pushReplacementNamed('/homescreen');
               },

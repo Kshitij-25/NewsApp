@@ -12,7 +12,7 @@ Future<void> main() async {
 
   await dotenv.load(fileName: "flutter.env");
 
-  runApp(const ProviderScope(child: MainApp()));
+  runApp(ProviderScope(child: MainApp()));
 }
 
 class MyHttpOverrides extends HttpOverrides {

@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:news_app2/presentation/widgets/everything_cards.dart';
 import 'package:news_app2/presentation/widgets/top_headlines_cards.dart';
 
 import '../providers/category_provider.dart';
+import '../providers/everything_provider.dart';
 import '../widgets/category_buttons.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -38,63 +40,40 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget bodyWidget(context) {
-    return const SingleChildScrollView(
+    return SingleChildScrollView(
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10.0),
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               "Trending News",
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
-            SizedBox(
+            const SizedBox(
               height: 300,
               child: TopHeadlinesCards(),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             SizedBox(
               height: 50,
-              // child: categoryButtons(context, _homeCont),
+              child: CategoryButtons(),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
+            ),
+            const SizedBox(
+              height: 300,
+              child: EverythingCards(),
             ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget categories(context) {
-    return Consumer(
-      builder: (context, ref, child) {
-        final selectedCategory = ref.watch(selectedCategoryProvider);
-        // final everythingList = ref.watch(everythingListProvider);
-        return ListView(
-          shrinkWrap: true,
-          scrollDirection: Axis.horizontal,
-          children: [
-            CategoryButton(
-              onPressed: () {
-                // ref
-                //     .read(selectedCategoryStateNotifierProvider)
-                //     .setSelectedCategory("entertainment");
-                // ref.read(everythingListProvider).clearEverythingList();
-              },
-              category: 'ENTERTAINMENT',
-              isSelected:
-                  ref.watch(selectedCategoryProvider) == "ENTERTAINMENT",
-            ),
-            // ... Repeat for other categories
-          ],
-        );
-      },
     );
   }
 }
