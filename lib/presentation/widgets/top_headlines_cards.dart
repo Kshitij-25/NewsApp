@@ -2,11 +2,25 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:news_app2/core/common/utils.dart';
 
 import '../providers/top_headlines_provider.dart';
+import 'article_bottomSheet.dart';
 
 class TopHeadlinesCards extends ConsumerWidget {
-  const TopHeadlinesCards({super.key});
+  Axis? scrollDirection;
+  int? itemCount;
+  double? width;
+  double? titleWidth;
+  EdgeInsetsGeometry? padding;
+
+  TopHeadlinesCards(
+      {super.key,
+      this.scrollDirection,
+      this.itemCount,
+      this.width,
+      this.titleWidth,
+      this.padding});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -18,90 +32,85 @@ class TopHeadlinesCards extends ConsumerWidget {
           // Do something with articlesList
           return ListView.builder(
             shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
-            itemCount: 6,
+            scrollDirection: scrollDirection!,
+            itemCount: itemCount ?? articlesList.length,
             itemBuilder: (context, index) {
-              if (index == 5) {
-                return Column(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        //
-                      },
-                      child: Container(
-                        width: 350,
-                        height: 200,
+              return Padding(
+                padding: padding ?? const EdgeInsets.all(0),
+                child: GestureDetector(
+                  onTap: () {
+                    ArticleDetails()
+                        .articleDetails(context, articlesList[index]);
+                  },
+                  child: Column(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(right: 10),
+                        height: ScreenSize.height(context) * 0.24,
+                        width: width,
                         decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10)),
+                          color: Colors.deepPurple.shade50,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
-                            color: Colors.black26),
-                        child: const Center(
-                          child: Text(
-                            "See More >>>",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
+                            child: articlesList[index].urlToImage != null
+                                ? Image(
+                                    image: NetworkImage(
+                                        articlesList[index].urlToImage!),
+                                    fit: BoxFit.cover,
+                                  )
+                                : Container(
+                                    decoration: const BoxDecoration(
+                                      color: Colors.black26,
+                                    ),
+                                    child: const Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          CupertinoIcons.news_solid,
+                                          size: 45,
+                                        ),
+                                        Text('No Image Found'),
+                                      ],
+                                    ),
+                                  ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                );
-              } else {
-                return Column(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(right: 10),
-                      height: 200,
-                      width: 350,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
+                      Container(
+                        margin: const EdgeInsets.only(right: 10),
+                        padding: const EdgeInsets.all(5),
+                        width: titleWidth,
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(10),
+                              bottomRight: Radius.circular(10)),
+                          color: Colors.deepPurple.shade50,
+                        ),
+                        child: Text(
+                          articlesList[index].title!,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                          textScaler: const TextScaler.linear(1),
+                          textAlign: TextAlign.center,
+                          softWrap: true,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: articlesList[index].urlToImage != null
-                            ? Image(
-                                image: NetworkImage(
-                                    articlesList[index].urlToImage!),
-                                fit: BoxFit.cover,
-                              )
-                            : Container(
-                                decoration: const BoxDecoration(
-                                  color: Colors.black26,
-                                ),
-                                child: const Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      CupertinoIcons.news_solid,
-                                      size: 45,
-                                    ),
-                                    Text('No Image Found'),
-                                  ],
-                                ),
-                              ),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(5),
-                      width: 350,
-                      child: Text(
-                        articlesList[index].title!,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 14),
-                        textAlign: TextAlign.center,
-                        softWrap: true,
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                );
-              }
+                    ],
+                  ),
+                ),
+              );
             },
           );
         } else {
-          return const Text('No data');
+          return const Center(child: Text('No data'));
         }
       },
       loading: () {
@@ -109,7 +118,7 @@ class TopHeadlinesCards extends ConsumerWidget {
         return Center(
           child: LoadingAnimationWidget.staggeredDotsWave(
             color: Colors.black,
-            size: 100,
+            size: 50,
           ),
         );
       },

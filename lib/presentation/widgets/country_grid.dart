@@ -4,6 +4,8 @@ import 'package:news_app2/presentation/providers/top_headlines_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../providers/country_provider.dart';
+import '../providers/everything_provider.dart';
+import '../providers/shared_prefs_provider.dart';
 
 class CountryGrid extends StatelessWidget {
   const CountryGrid({super.key});
@@ -25,15 +27,20 @@ class CountryGrid extends StatelessWidget {
 
             return GestureDetector(
               onTap: () async {
+                // Save selected country code to shared preferences
+                final sharedPreferences = await SharedPreferences.getInstance();
+                sharedPreferences.setString('selectedCountryCode', countryCode);
+
                 ref
                     .read(selectedCountryCodeProvider.notifier)
                     .setSelectedCountryCode(countryCode);
 
                 // Save selected country code to shared preferences
-                final sharedPreferences = await SharedPreferences.getInstance();
-                sharedPreferences.setString('selectedCountryCode', countryCode);
+                // await SharedPreferencesHelper.saveSelectedCountryCode(
+                //     countryCode);
 
-                ref.read(topHeadlinesProvider);
+                ref.refresh(topHeadlinesProvider);
+                ref.refresh(everythingProvider);
                 Navigator.of(context).pushReplacementNamed('/homescreen');
               },
               child: Card(

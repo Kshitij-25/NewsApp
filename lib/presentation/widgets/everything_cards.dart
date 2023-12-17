@@ -3,91 +3,187 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
+import '../../core/common/utils.dart';
+import '../../data/model/articles.dart';
+import '../providers/articles_provider.dart';
 import '../providers/everything_provider.dart';
-import '../providers/top_headlines_provider.dart';
+import 'article_bottomSheet.dart';
 
 class EverythingCards extends ConsumerWidget {
-  const EverythingCards({super.key});
+  Axis? scrollDirection;
+  ScrollPhysics? physics;
+  double? cardHeight;
+  double? imgHeight;
+  double? textWidth;
+  TextAlign? textAlign;
+  int? itemCount;
+  final ScrollController _scrollController = ScrollController();
+  final List<Articles> allArticles = [];
+  EverythingCards(
+      {super.key,
+      this.scrollDirection,
+      this.physics,
+      this.cardHeight,
+      this.imgHeight,
+      this.textWidth,
+      this.textAlign,
+      this.itemCount});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final everythingProviderAsyncValue = ref.watch(everythingProvider);
+
+    final isCategoryScreen =
+        ModalRoute.of(context)?.settings.name == '/categoryScreen';
+
+    // Listen to scroll events
+    _scrollController.addListener(() {
+      if (isCategoryScreen &&
+          _scrollController.position.pixels ==
+              _scrollController.position.maxScrollExtent &&
+          !ref.read(fetchMoreEverythingProvider).isLoading) {
+        // User has scrolled to the end and not loading, trigger lazy loading
+        ref.read(pageCountProvider.notifier).increment();
+      }
+    });
+
     return everythingProviderAsyncValue.when(
       data: (articlesList) {
         // Handle successful data
         if (articlesList != null) {
+          // ref.read(articlesListProvider.notifier).addArticles(articlesList);
+          allArticles.addAll(articlesList);
           // Do something with articlesList
-          return ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: articlesList.length,
-            itemBuilder: (context, index) {
-              return Column(
+          if (isCategoryScreen) {
+            return SingleChildScrollView(
+              controller: _scrollController,
+              child: Column(
                 children: [
-                  Container(
-                    height: 200,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: articlesList[index].urlToImage != null
-                          ? Image(
-                              image:
-                                  NetworkImage(articlesList[index].urlToImage!),
-                              fit: BoxFit.cover,
-                            )
-                          : Container(
-                              decoration: const BoxDecoration(
-                                color: Colors.black26,
-                              ),
-                              child: const Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    CupertinoIcons.news_solid,
-                                    size: 45,
-                                  ),
-                                  Text('No Image Found'),
-                                ],
-                              ),
-                            ),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(5),
-                    // width: 350,
-                    child: Text(
-                      articlesList[index].title!,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 14),
-                      textAlign: TextAlign.center,
-                      softWrap: true,
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
+                  articleList(),
+                  if (isCategoryScreen &&
+                      ref
+                          .read(fetchMoreEverythingProvider)
+                          .isLoading) // Show a loading indicator only in CategoryScreen
+                    const Center(child: CircularProgressIndicator()),
                 ],
-              );
-            },
-          );
+              ),
+            );
+          } else {
+            return ListView(
+              controller: _scrollController,
+              physics: physics,
+              shrinkWrap: true,
+              children: [
+                articleList(),
+                if (isCategoryScreen &&
+                    ref
+                        .read(fetchMoreEverythingProvider)
+                        .isLoading) // Show a loading indicator only in CategoryScreen
+                  const Center(child: CircularProgressIndicator()),
+              ],
+            );
+          }
         } else {
-          return const Text('No data');
+          return const Center(child: Text('No data'));
         }
       },
       loading: () {
         // Handle loading state
-        return Center(
-          child: LoadingAnimationWidget.staggeredDotsWave(
-            color: Colors.black,
-            size: 100,
-          ),
-        );
+        return !isCategoryScreen
+            ? Center(
+                child: LoadingAnimationWidget.staggeredDotsWave(
+                  color: Colors.black,
+                  size: 50,
+                ),
+              )
+            : Container();
       },
       error: (error, stackTrace) {
         // Handle error state
         print('Error: $error');
         return const Text('Error occurred');
+      },
+    );
+  }
+
+  Widget articleList() {
+    return ListView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: itemCount ?? allArticles.length,
+      itemBuilder: (context, index) {
+        // final allArticles = ref.read(articlesListProvider);
+        return GestureDetector(
+          onTap: () =>
+              ArticleDetails().articleDetails(context, allArticles[index]),
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 10),
+            height: cardHeight,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.deepPurple.shade50),
+            child: ListView(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              scrollDirection: scrollDirection!,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  height: imgHeight,
+                  width: ScreenSize.width(context) * 0.35,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: allArticles[index].urlToImage != null
+                        ? Image(
+                            image: NetworkImage(
+                              allArticles[index].urlToImage!,
+                            ),
+                            fit: BoxFit.cover,
+                          )
+                        : const Center(
+                            child: Icon(
+                              CupertinoIcons.news_solid,
+                              size: 45,
+                            ),
+                          ),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.only(
+                    top: 10,
+                    right: 10,
+                    bottom: 10,
+                    left: 10,
+                  ),
+                  width: textWidth,
+                  child: Column(
+                    children: [
+                      Text(
+                        allArticles[index].title!,
+                        textAlign: textAlign,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textScaler: const TextScaler.linear(1.1),
+                        softWrap: true,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        allArticles[index].description ?? "",
+                        textAlign: textAlign,
+                        textScaler: const TextScaler.linear(0.9),
+                        softWrap: true,
+                        maxLines: 4,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
       },
     );
   }

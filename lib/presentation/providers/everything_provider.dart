@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import '../../core/error/failure.dart';
 import '../../core/usecases/fetch_everything_use_case.dart';
 import '../../data/model/articles.dart';
@@ -21,8 +23,9 @@ final fetchEverythingUseCaseProvider = Provider<FetchEverythingUseCase>((ref) {
 final everythingProvider = FutureProvider<List<Articles>?>((ref) async {
   final useCase = ref.read(fetchEverythingUseCaseProvider);
   final selectedCategory = ref.watch(selectedCategoryProvider);
+  final pageCount = ref.watch(pageCountProvider);
   try {
-    return await useCase.getEverything(selectedCategory, 10, 1);
+    return await useCase.getEverything(selectedCategory, 10, pageCount);
   } on Failure catch (failure) {
     print(failure.message);
     return null;
@@ -32,3 +35,32 @@ final everythingProvider = FutureProvider<List<Articles>?>((ref) async {
 final everythingApiServiceProvider = Provider<EverythingApiService>((ref) {
   return EverythingApiService();
 });
+
+final fetchMoreEverythingProvider =
+    FutureProvider<List<Articles>?>((ref) async {
+  final useCase = ref.read(fetchEverythingUseCaseProvider);
+  final selectedCategory = ref.watch(selectedCategoryProvider);
+  final pageCount = ref.watch(pageCountProvider);
+  try {
+    return await useCase.getEverything(selectedCategory, 10, pageCount);
+  } on Failure catch (failure) {
+    print(failure.message);
+    return null;
+  }
+});
+
+final scrollControllerProvider = Provider<ScrollController>((ref) {
+  return ScrollController();
+});
+
+class PageCountNotifier extends StateNotifier<int> {
+  PageCountNotifier() : super(1);
+
+  void increment() {
+    state = state + 1;
+  }
+}
+
+final pageCountProvider = StateNotifierProvider<PageCountNotifier, int>(
+  (ref) => PageCountNotifier(),
+);

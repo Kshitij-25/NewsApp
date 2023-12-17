@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:news_app2/presentation/widgets/everything_cards.dart';
 import 'package:news_app2/presentation/widgets/top_headlines_cards.dart';
 
+import '../../core/common/utils.dart';
 import '../providers/category_provider.dart';
 import '../providers/everything_provider.dart';
 import '../widgets/category_buttons.dart';
@@ -15,6 +16,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text('NewsNest'),
       ),
       drawer: Drawer(
@@ -24,7 +26,7 @@ class HomeScreen extends StatelessWidget {
               leading: const Icon(CupertinoIcons.globe),
               title: const Text('Change Country'),
               onTap: () {
-                //
+                Navigator.of(context).pushReplacementNamed('/');
               },
             ),
             const ListTile(
@@ -40,38 +42,83 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget bodyWidget(context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Trending News",
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            const SizedBox(
-              height: 300,
-              child: TopHeadlinesCards(),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            SizedBox(
-              height: 50,
-              child: CategoryButtons(),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            const SizedBox(
-              height: 300,
-              child: EverythingCards(),
-            ),
-          ],
+    return SafeArea(
+      bottom: true,
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Trending News",
+                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pushNamed('/trendingScreen');
+                    },
+                    child: const Text("See more "),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              SizedBox(
+                height: ScreenSize.height(context) * 0.31,
+                child: TopHeadlinesCards(
+                  scrollDirection: Axis.horizontal,
+                  width: ScreenSize.width(context) * 0.75,
+                  titleWidth: ScreenSize.width(context) * 0.75,
+                  itemCount: 5,
+                ),
+              ),
+              SizedBox(
+                height: 50,
+                child: CategoryButtons(),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              SizedBox(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    EverythingCards(
+                      physics: const NeverScrollableScrollPhysics(),
+                      scrollDirection: Axis.horizontal,
+                      textAlign: TextAlign.center,
+                      cardHeight: ScreenSize.height(context) * 0.17,
+                      textWidth: ScreenSize.width(context) * 0.6,
+                      itemCount: 10,
+                    ),
+                    MaterialButton(
+                      elevation: 5,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      minWidth: ScreenSize.width(context),
+                      color: Colors.deepPurpleAccent.shade200,
+                      height: 50,
+                      onPressed: () {
+                        Navigator.of(context).pushNamed('/categoryScreen');
+                      },
+                      child: const Text(
+                        "See More",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
