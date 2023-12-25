@@ -10,7 +10,8 @@ class EverythingApiService {
 
   Future<List<Articles>?>? fetchEverything(query, pageSize, page) async {
     final String apiUrl =
-        'https://newsapi.org/v2/everything?q=$query&pageSize=$pageSize&page=$page&apiKey=$apiKey';
+        'https://newsapi.org/v2/everything?q=$query&apiKey=$apiKey';
+    // &pageSize=$pageSize&page=$page
 
     try {
       Response response = await dioRequest.getReq(

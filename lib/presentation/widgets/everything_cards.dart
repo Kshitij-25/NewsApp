@@ -6,6 +6,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../../core/common/utils.dart';
 import '../../data/model/articles.dart';
 import '../providers/articles_provider.dart';
+import '../providers/category_provider.dart';
 import '../providers/everything_provider.dart';
 import 'article_bottomSheet.dart';
 
@@ -37,26 +38,30 @@ class EverythingCards extends ConsumerWidget {
         ModalRoute.of(context)?.settings.name == '/categoryScreen';
 
     // Listen to scroll events
-    _scrollController.addListener(() {
-      if (isCategoryScreen &&
-          _scrollController.position.pixels ==
-              _scrollController.position.maxScrollExtent &&
-          !ref.read(fetchMoreEverythingProvider).isLoading) {
-        // User has scrolled to the end and not loading, trigger lazy loading
-        ref.read(pageCountProvider.notifier).increment();
-      }
-    });
+    // _scrollController.addListener(() {
+    //   if (isCategoryScreen &&
+    //       _scrollController.position.pixels ==
+    //           _scrollController.position.maxScrollExtent &&
+    //       !ref.read(fetchMoreEverythingProvider).isLoading) {
+    //     // User has scrolled to the end and not loading, trigger lazy loading
+    //     ref.read(pageCountProvider.notifier).increment();
+    //   }
+    // });
 
     return everythingProviderAsyncValue.when(
       data: (articlesList) {
         // Handle successful data
         if (articlesList != null) {
           // ref.read(articlesListProvider.notifier).addArticles(articlesList);
+          // Clear the list when a new category is selected
+          if (ref.watch(selectedCategoryProvider) != allArticles) {
+            allArticles.clear();
+          }
           allArticles.addAll(articlesList);
           // Do something with articlesList
           if (isCategoryScreen) {
             return SingleChildScrollView(
-              controller: _scrollController,
+              // controller: _scrollController,
               child: Column(
                 children: [
                   articleList(),
