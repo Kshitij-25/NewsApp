@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../providers/country_provider.dart';
 import '../providers/everything_provider.dart';
-import '../providers/shared_prefs_provider.dart';
 
 class CountryGrid extends StatelessWidget {
   const CountryGrid({super.key});

@@ -5,7 +5,6 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../core/common/utils.dart';
 import '../../data/model/articles.dart';
-import '../providers/articles_provider.dart';
 import '../providers/category_provider.dart';
 import '../providers/everything_provider.dart';
 import 'article_bottomSheet.dart';

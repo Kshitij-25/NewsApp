@@ -1,6 +1,5 @@
 import 'package:news_app2/core/error/failure.dart';
 import 'package:news_app2/data/model/articles.dart';
-import 'package:news_app2/data/repositories/everything_repo.dart';
 import 'package:news_app2/data/repositories/top_headlines_repo.dart';
 
 abstract class TopHeadlinesUseCase {

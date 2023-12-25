@@ -1,12 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:news_app2/presentation/widgets/everything_cards.dart';
 import 'package:news_app2/presentation/widgets/top_headlines_cards.dart';
 
 import '../../core/common/utils.dart';
-import '../providers/category_provider.dart';
-import '../providers/everything_provider.dart';
 import '../widgets/category_buttons.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -17,24 +14,63 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('NewsNest'),
+        // title: const Text('NewsNest'),
       ),
       drawer: Drawer(
-        child: ListView(
-          children: [
-            ListTile(
-              leading: const Icon(CupertinoIcons.globe),
-              title: const Text('Change Country'),
-              onTap: () {
-                Navigator.of(context).pushReplacementNamed('/');
-              },
-            ),
-            const ListTile(
-              leading: Icon(CupertinoIcons.mail_solid),
-              title: Text('kshitijnishu@gmail.com'),
-              subtitle: Text('Write to us'),
-            ),
-          ],
+        backgroundColor: const Color.fromARGB(255, 68, 68, 68),
+        child: SafeArea(
+          child: Column(
+            children: [
+              Image.asset('assets/logo/logo-no-background.png', height: 50),
+              SizedBox(
+                height: ScreenSize.height(context) * 0.05,
+              ),
+              ListView(
+                shrinkWrap: true,
+                children: [
+                  ListTile(
+                    leading: const Icon(
+                      CupertinoIcons.globe,
+                      color: Colors.white,
+                    ),
+                    title: const Text(
+                      'Change Country',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.of(context).pushReplacementNamed('/');
+                    },
+                  ),
+                  const Divider(
+                    color: Colors.white38,
+                  ),
+                  const ListTile(
+                    leading: Icon(
+                      CupertinoIcons.mail_solid,
+                      color: Colors.white,
+                    ),
+                    title: Text(
+                      'kshitijnishu@gmail.com',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Write to us',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const Divider(
+                    color: Colors.white38,
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
       body: bodyWidget(context),
