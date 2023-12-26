@@ -1,11 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:news_app2/core/common/utils.dart';
 import 'package:news_app2/data/model/articles.dart';
 import 'package:news_app2/presentation/pages/webview_screen.dart';
 
 class ArticleDetails {
   Future<dynamic> articleDetails(context, Articles article) async {
     return showModalBottomSheet(
+      constraints: BoxConstraints(minWidth: ScreenSize.width(context)),
+      useSafeArea: true,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
