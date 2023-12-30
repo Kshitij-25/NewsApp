@@ -7,7 +7,9 @@ import 'package:news_app2/presentation/pages/webview_screen.dart';
 class ArticleDetails {
   Future<dynamic> articleDetails(context, Articles article) async {
     return showModalBottomSheet(
-      constraints: BoxConstraints(minWidth: ScreenSize.width(context)),
+      constraints: BoxConstraints(
+          minWidth: ScreenSize.width(context),
+          maxHeight: ScreenSize.height(context) * 0.8),
       useSafeArea: true,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
@@ -31,8 +33,8 @@ Widget _buildBottomSheetContent(context, Articles article) {
     bottom: true,
     child: Container(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
+      child: ListView(
+        shrinkWrap: true,
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(20),
@@ -73,6 +75,7 @@ Widget _buildBottomSheetContent(context, Articles article) {
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => WebViewScreen(
                   url: article.url,
+                  source: article.source!.name,
                 ),
               ));
             },

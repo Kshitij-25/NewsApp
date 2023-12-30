@@ -14,6 +14,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: '/splash', // Set your initial route
+      title: "NewsNest",
       routes: {
         '/splash': (context) => const SplashScreen(),
         '/': (context) => const CountryScreen(),
@@ -24,44 +25,3 @@ class MainApp extends StatelessWidget {
     );
   }
 }
-
-
-
-// class MainApp extends ConsumerWidget {
-//   const MainApp({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     return FutureBuilder<String?>(
-//       future: SharedPreferences.getInstance()
-//           .then((prefs) => prefs.getString('selectedCountryCode')),
-//       builder: (context, snapshot) {
-//         if (snapshot.connectionState == ConnectionState.done) {
-//           final String? countryCode = snapshot.data;
-
-//           final initialRoute = countryCode != null ? '/' : '/';
-
-//           if (countryCode != null) {
-//             // Set the selected country code if available
-//             WidgetsBinding.instance!.addPostFrameCallback((_) {
-//               ref
-//                   .read(selectedCountryCodeProvider.notifier)
-//                   .setSelectedCountryCode(countryCode);
-//             });
-//           }
-
-//           return MaterialApp(
-//             debugShowCheckedModeBanner: false,
-//             initialRoute: initialRoute,
-//             routes: {
-//               '/': (context) => const CountryScreen(),
-//               '/homescreen': (context) => const HomeScreen(),
-//             },
-//           );
-//         } else {
-//           return const CircularProgressIndicator();
-//         }
-//       },
-//     );
-//   }
-// }

@@ -23,7 +23,7 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace "com.kshitijcodecraft.newsnest"
+    namespace "com.example.news_app2"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
