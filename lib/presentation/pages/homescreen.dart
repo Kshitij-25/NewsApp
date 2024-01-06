@@ -104,7 +104,11 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              SizedBox(
+              Container(
+                constraints: BoxConstraints(
+                  maxHeight: ScreenSize.height(context) * 0.31,
+                  minHeight: ScreenSize.height(context) * 0.31,
+                ),
                 height: ScreenSize.height(context) * 0.31,
                 child: TopHeadlinesCards(
                   scrollDirection: Axis.horizontal,
